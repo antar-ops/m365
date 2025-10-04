@@ -1,9 +1,8 @@
 function FindProxyForURL(url, host) {
-  // IMPORTANT: Remember to replace this placeholder with your actual gateway IP and port.
-  // Example: "PROXY 34.14.198.164:443"
-  var proxy_server = "PROXY <your-gateway-proxy-address>";
+  // Replace with your real gateway external IP or DNS name
+  var proxy_server = "PROXY 34.14.198.164:443";
 
-  // A simplified list of root domains to proxy.
+  // List of Microsoft 365 domains to route through the secure gateway
   var domainsToProxy = [
     "login.microsoftonline.com",
     "graph.windows.net",
@@ -16,15 +15,13 @@ function FindProxyForURL(url, host) {
     "onenote.com"
   ];
 
-  // Loop through the list of domains.
+  // Match domain itself and all subdomains
   for (var i = 0; i < domainsToProxy.length; i++) {
-    // This check robustly matches the domain itself (e.g., "office.com")
-    // AND any subdomain (e.g., "word.office.com").
     if (host == domainsToProxy[i] || dnsDomainIs(host, "." + domainsToProxy[i])) {
       return proxy_server;
     }
   }
 
-  // For all other traffic, connect directly to the internet.
+  // Everything else goes directly
   return "DIRECT";
 }
