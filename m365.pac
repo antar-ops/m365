@@ -1,29 +1,18 @@
 function FindProxyForURL(url, host) {
-  // Use your actual BeyondCorp Secure Gateway DNS name
-  var proxy_server = "HTTPS securegateway-m365-secure-gateway-v57fc849597f522a4p-tp.p.beyondcorp.net:443";
+  // Secure Gateway proxy (use HTTPS, not PROXY)
+  var proxy_server = "HTTPS 34.14.198.164:443";
 
-  // Microsoft 365 domains
-  var domainsToProxy = [
-    "login.microsoftonline.com",
-    "graph.windows.net",
-    "office.com",
-    "office365.com",
-    "sharepoint.com",
-    "outlook.com",
-    "teams.microsoft.com",
-    "lync.com",
-    "onenote.com"
-  ];
+  // Microsoft 365 key domains
+  if (dnsDomainIs(host, "login.microsoftonline.com")) return proxy_server;
+  if (dnsDomainIs(host, "graph.windows.net")) return proxy_server;
+  if (shExpMatch(host, "*.office.com")) return proxy_server;
+  if (shExpMatch(host, "*.office365.com")) return proxy_server;
+  if (shExpMatch(host, "*.sharepoint.com")) return proxy_server;
+  if (shExpMatch(host, "*.outlook.com")) return proxy_server;
+  if (shExpMatch(host, "*.teams.microsoft.com")) return proxy_server;
+  if (shExpMatch(host, "*.lync.com")) return proxy_server;
+  if (shExpMatch(host, "*.onenote.com")) return proxy_server;
 
-  // Loop through and match exact or subdomains
-  for (var i = 0; i < domainsToProxy.length; i++) {
-    if (host == domainsToProxy[i] ||
-        dnsDomainIs(host, "." + domainsToProxy[i]) ||
-        shExpMatch(host, "*." + domainsToProxy[i])) {
-      return proxy_server;
-    }
-  }
-
-  // Default: direct internet
+  // Everything else bypasses proxy
   return "DIRECT";
 }
