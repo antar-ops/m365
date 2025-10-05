@@ -1,8 +1,8 @@
 function FindProxyForURL(url, host) {
-  // Replace with your real gateway external IP or DNS name
-  var proxy_server = "PROXY 34.14.198.164:443";
+  // Use your actual BeyondCorp Secure Gateway DNS name
+  var proxy_server = "HTTPS securegateway-m365-secure-gateway-v57fc849597f522a4p-tp.p.beyondcorp.net:443";
 
-  // List of Microsoft 365 domains to route through the secure gateway
+  // Microsoft 365 domains
   var domainsToProxy = [
     "login.microsoftonline.com",
     "graph.windows.net",
@@ -15,13 +15,15 @@ function FindProxyForURL(url, host) {
     "onenote.com"
   ];
 
-  // Match domain itself and all subdomains
+  // Loop through and match exact or subdomains
   for (var i = 0; i < domainsToProxy.length; i++) {
-    if (host == domainsToProxy[i] || dnsDomainIs(host, "." + domainsToProxy[i])) {
+    if (host == domainsToProxy[i] ||
+        dnsDomainIs(host, "." + domainsToProxy[i]) ||
+        shExpMatch(host, "*." + domainsToProxy[i])) {
       return proxy_server;
     }
   }
 
-  // Everything else goes directly
+  // Default: direct internet
   return "DIRECT";
 }
