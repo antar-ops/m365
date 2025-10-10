@@ -1,7 +1,8 @@
 function FindProxyForURL(url, host) {
   // Define the secure proxy server address for your Cloud Run service.
   // We use "HTTPS" because the service is on a secure URL and listens on port 443.
-  var proxy_server = "HTTPS m365-pac-760924100245.us-central1.run.app:443";
+  // --- AFTER (EXAMPLE) ---
+var proxy_server = "PROXY real-proxy.yourcompany.com:8080";
 
   // An array of Microsoft 365 domains and subdomains to be routed through the secure gateway.
   // Using ".domain.com" format matches the domain and any subdomains.
