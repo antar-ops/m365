@@ -1,11 +1,11 @@
 function FindProxyForURL(url, host) {
-  // Define the secure proxy server address for your Cloud Run service.
-  // We use "HTTPS" because the service is on a secure URL and listens on port 443.
-  // --- AFTER (EXAMPLE) ---
-var proxy_server = "PROXY real-proxy.yourcompany.com:8080";
+  // Define the Google Secure Gateway IPs and port (8080 is the default proxy listener).
+  var proxy_server = "PROXY 34.14.205.133:8080; " +
+                     "PROXY 34.93.31.114:8080; " +
+                     "PROXY 34.131.18.75:8080; " +
+                     "PROXY 34.131.152.152:8080";
 
-  // An array of Microsoft 365 domains and subdomains to be routed through the secure gateway.
-  // Using ".domain.com" format matches the domain and any subdomains.
+  // List of Microsoft 365 domains that must go through the Secure Gateway.
   var m365_domains = [
     "login.microsoftonline.com",
     "graph.windows.net",
@@ -18,17 +18,13 @@ var proxy_server = "PROXY real-proxy.yourcompany.com:8080";
     ".onenote.com"
   ];
 
-  // Loop through the list of M365 domains.
-  // The shExpMatch function performs a shell-like expression match, ideal for hostnames.
+  // Loop through each Microsoft 365 domain and check if the requested host matches.
   for (var i = 0; i < m365_domains.length; i++) {
-    // Note: The "*" is needed here because some domains in the list do not start with a dot.
     if (shExpMatch(host, "*" + m365_domains[i])) {
-      // If the requested host matches an M365 domain, return the proxy server address.
       return proxy_server;
     }
   }
 
-  // For all other traffic that does not match the M365 domains,
-  // return "DIRECT" to bypass the proxy and connect directly to the internet.
+  // For all other traffic, connect directly to the Internet.
   return "DIRECT";
 }
