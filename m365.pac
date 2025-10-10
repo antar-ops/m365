@@ -1,18 +1,31 @@
 function FindProxyForURL(url, host) {
-  // Secure Gateway proxy (use HTTPS, not PROXY)
-  var proxy_server = "HTTPS 34.14.198.164:443";
+  // Define the proxy server addresses using the gateway IPs and port 8080.
+  // The browser will try them in order.
+  var proxy_server = "PROXY 34.14.205.133:8080; " +
+                     "PROXY 34.93.31.114:8080; " +
+                     "PROXY 34.131.18.75:8080; " +
+                     "PROXY 34.131.152.152:8080";
 
-  // Microsoft 365 key domains
-  if (dnsDomainIs(host, "login.microsoftonline.com")) return proxy_server;
-  if (dnsDomainIs(host, "graph.windows.net")) return proxy_server;
-  if (shExpMatch(host, "*.office.com")) return proxy_server;
-  if (shExpMatch(host, "*.office365.com")) return proxy_server;
-  if (shExpMatch(host, "*.sharepoint.com")) return proxy_server;
-  if (shExpMatch(host, "*.outlook.com")) return proxy_server;
-  if (shExpMatch(host, "*.teams.microsoft.com")) return proxy_server;
-  if (shExpMatch(host, "*.lync.com")) return proxy_server;
-  if (shExpMatch(host, "*.onenote.com")) return proxy_server;
+  // An array of Microsoft 365 domains to be routed through the secure gateway.
+  var m365_domains = [
+    "login.microsoftonline.com",
+    "graph.windows.net",
+    ".office.com",
+    ".office365.com",
+    ".sharepoint.com",
+    ".outlook.com",
+    ".teams.microsoft.com",
+    ".lync.com",
+    ".onenote.com"
+  ];
 
-  // Everything else bypasses proxy
+  // Loop through the list of M365 domains.
+  for (var i = 0; i < m365_domains.length; i++) {
+    if (shExpMatch(host, "*" + m365_domains[i])) {
+      return proxy_server;
+    }
+  }
+
+  // For all other traffic, connect directly.
   return "DIRECT";
 }
