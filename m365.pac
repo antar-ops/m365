@@ -19,9 +19,5 @@ function FindProxyForURL(url, host) {
     }
   }
   
-  if (dnsDomainIs(host, "httpbin.org")) {
-    return proxy_server;
-  }
-  
   return "DIRECT";
 }
