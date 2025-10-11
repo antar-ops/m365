@@ -1,11 +1,6 @@
 function FindProxyForURL(url, host) {
-  // Define the Google Secure Gateway IPs and port (8080 is the default proxy listener).
-  var proxy_server = "PROXY 34.14.205.133:8080; " +
-                     "PROXY 34.93.31.114:8080; " +
-                     "PROXY 34.131.18.75:8080; " +
-                     "PROXY 34.131.152.152:8080";
-
-  // List of Microsoft 365 domains that must go through the Secure Gateway.
+  var proxy_server = "HTTPS securegateway-m365-secure-gateway-a2ee0198c4995c770p-tp.p.beyondcorp.net:443";
+  
   var m365_domains = [
     "login.microsoftonline.com",
     "graph.windows.net",
@@ -17,14 +12,16 @@ function FindProxyForURL(url, host) {
     ".lync.com",
     ".onenote.com"
   ];
-
-  // Loop through each Microsoft 365 domain and check if the requested host matches.
+  
   for (var i = 0; i < m365_domains.length; i++) {
     if (shExpMatch(host, "*" + m365_domains[i])) {
       return proxy_server;
     }
   }
-
-  // For all other traffic, connect directly to the Internet.
+  
+  if (dnsDomainIs(host, "httpbin.org")) {
+    return proxy_server;
+  }
+  
   return "DIRECT";
 }
